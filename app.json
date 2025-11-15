@@ -3,7 +3,7 @@
     "name": "tailwindmobile",
     "slug": "tailwindmobile",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
@@ -21,7 +21,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.sourav29meow.tailwindmobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"
