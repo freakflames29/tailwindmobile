@@ -1,10 +1,13 @@
 import { View, Text, FlatList } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
 import tw from "../../lib/twrc";
 import WorkingView from "../Components/WorkingView";
 import TaskCard from "../Components/TaskCard";
 import AppButton from "../Components/AppButton";
 import { TaskData } from "../../Model/TaskData";
+import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
+import H1Text from "../Components/H1Text";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const dummyData: TaskData[] = [
   {
@@ -34,8 +37,28 @@ const dummyData: TaskData[] = [
 ];
 
 const Home = () => {
+  const actionSheetRef = useRef<ActionSheetRef>(null);
+
+  const handleLongPress = () => {
+    // console.log("Long Pressed");
+    actionSheetRef.current?.show();
+  };
   return (
     <WorkingView>
+      <ActionSheet
+        ref={actionSheetRef}
+        containerStyle={tw`h-1/4 p-4 items-center`}
+      >
+        <H1Text title="Task Done ?" style={`text-center my-3`} />
+        <View style={tw`flex-row gap-2 mt-2 w-1/2 items-center`}>
+          <AppButton title="Not Done" bgColor="bg-red-500" onPress={()=>actionSheetRef.current?.hide()} />
+          <AppButton
+            title="Done"
+            bgColor="bg-green-500"
+            icon={<FontAwesome name="check" size={24} color="white" />}
+          />
+        </View>
+      </ActionSheet>
       <View style={styles.container}>
         <Text style={styles.date}>Wed 16 May, 2025</Text>
         <Text style={styles.hareKrishna}>Hare Krishna 🪷</Text>
@@ -56,6 +79,7 @@ const Home = () => {
               title={item.title}
               date={item.date}
               pills={item.pills}
+              onLongPress={handleLongPress}
             />
           );
         }}

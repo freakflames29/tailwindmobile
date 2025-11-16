@@ -9,6 +9,7 @@ interface TaskCardProps {
   title: string;
   date: string;
   pills: PillType[];
+  onLongPress?: () => void;
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({
@@ -16,6 +17,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   title = "",
   date = "",
   pills = [],
+  onLongPress,
 }) => {
   const backgroundColor =
     type === "high"
@@ -34,6 +36,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
     <TouchableOpacity
       style={[style.card, tw`${backgroundColor}`]}
       activeOpacity={0.6}
+      onLongPress={onLongPress}
     >
       <View style={[style.contentCard, tw`${borderColor}`]}>
         <View style={style.row}>

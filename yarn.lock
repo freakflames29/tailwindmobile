@@ -4137,6 +4137,11 @@ react-is@^19.1.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.0.tgz#ddc3b4a4e0f3336c3847f18b806506388d7b9973"
   integrity sha512-x3Ax3kNSMIIkyVYhWPyO09bu0uttcAIoecO/um/rKGQ4EltYWVYtyiGkS/3xMynrbVQdS69Jhlv8FXUEZehlzA==
 
+react-native-actions-sheet@^0.9.8:
+  version "0.9.8"
+  resolved "https://registry.yarnpkg.com/react-native-actions-sheet/-/react-native-actions-sheet-0.9.8.tgz#f6c213bdb7cae244495cd54513d5b458cf84f18e"
+  integrity sha512-hoFLKEoknwQEuxANbRxtg/LofvhqqLYbtIp/XiqC2cI+nyfYVra5i62A75ksZdBAqB6iZ3nolOwL8voLfSUXIw==
+
 react-native-gesture-handler@~2.28.0:
   version "2.28.0"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.28.0.tgz#07fb4f5eae72f810aac3019b060d26c1835bfd0c"

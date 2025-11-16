@@ -1,4 +1,10 @@
-import { TouchableOpacity, Text, ActivityIndicator, ViewStyle, TextStyle } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+  ViewStyle,
+  TextStyle,
+} from "react-native";
 import React from "react";
 import tw from "../../lib/twrc";
 
@@ -7,11 +13,12 @@ interface AppButtonProps {
   onPress?: () => void;
   loading?: boolean;
   disabled?: boolean;
-  bgColor?: string;       // bg-blue-500, bg-yellow-400 etc.
-  textColor?: string;     // text-white, text-black etc.
-  rounded?: string;       // rounded-3, rounded-full etc.
+  bgColor?: string; // bg-blue-500, bg-yellow-400 etc.
+  textColor?: string; // text-white, text-black etc.
+  rounded?: string; // rounded-3, rounded-full etc.
   fullWidth?: boolean;
   size?: "sm" | "md" | "lg";
+  icon?: React.ReactNode;
 }
 
 const AppButton: React.FC<AppButtonProps> = ({
@@ -24,6 +31,7 @@ const AppButton: React.FC<AppButtonProps> = ({
   rounded = "rounded-4",
   fullWidth = true,
   size = "md",
+  icon,
 }) => {
   return (
     <TouchableOpacity
@@ -42,16 +50,19 @@ const AppButton: React.FC<AppButtonProps> = ({
       {loading ? (
         <ActivityIndicator size="small" color="#fff" />
       ) : (
-        <Text style={[styles.text, tw`${textColor}`]}>{title}</Text>
+        <>
+          {icon}
+          <Text style={[styles.text, tw`${textColor}`]}>{title}</Text>
+        </>
       )}
     </TouchableOpacity>
   );
 };
 
 const styles = {
-  base: tw`justify-center items-center`,
+  base: tw`justify-center items-center flex-row gap-2`,
   text: tw`text-lg font-urb-bold`,
-  
+
   // Sizes
   sm: tw`py-3 px-3`,
   md: tw`py-4 px-4`,
