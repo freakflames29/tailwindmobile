@@ -16,7 +16,7 @@ const Spalsh = () => {
         <StatusBar style="light" />
         <View style={styles.card}>
           <Text style={styles.text}>
-            Your personal app for tracking your daily Krishna activities.
+            Your personal app for tracking your daily activities.
           </Text>
 
           <TouchableOpacity
@@ -33,7 +33,7 @@ const Spalsh = () => {
 
 const styles = {
   imageBack: tw`flex-1 justify-end p-1`,
-  card: tw` h-2/5
+  card: tw` h-1/3
            bg-blue-900
             rounded-10
             p-7`,
