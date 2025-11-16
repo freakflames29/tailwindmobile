@@ -61,7 +61,7 @@ const Home = () => {
       </ActionSheet>
       <View style={styles.container}>
         <Text style={styles.date}>Wed 16 May, 2025</Text>
-        <Text style={styles.hareKrishna}>Hare Krishna 🪷</Text>
+        <Text style={styles.hareKrishna}>Hi! Sourav 🪷</Text>
         <Text style={styles.greeting}>Good Afternoon</Text>
       </View>
 

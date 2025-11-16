@@ -39,7 +39,7 @@ const PillText: React.FC<PillProps> = ({ type, onPress }) => {
 const styles = {
   container: tw`
     px-4 
-    py-2 
+    py-1 
     rounded-full 
     self-start
   `,
