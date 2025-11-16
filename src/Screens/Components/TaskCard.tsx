@@ -3,10 +3,18 @@ import React from "react";
 import tw from "../../lib/twrc";
 import PillText from "./PillText";
 
-const TaskCard = () => {
+interface TaskCardProps {
+  type: "high" | "low" | "mid";
+}
+
+const TaskCard:React.FC<TaskCardProps> = ({type="mid"}) => {
+  const backgroundColor = type === "high" ? "bg-red-400" : type === "low" ? "bg-green-400" : "bg-blue-400";
+  const borderColor = type === "high" ? "border-red-400" : type === "low" ? "border-green-400" : "border-blue-400";
+
+
   return (
-    <TouchableOpacity style={[style.card, tw`${1}`]} activeOpacity={0.6}>
-      <View style={style.contentCard}>
+    <TouchableOpacity style={[style.card, tw`${backgroundColor}`]} activeOpacity={0.6}>
+      <View style={[style.contentCard, tw`${borderColor}`]}>
         <View style={style.row}>
           <View style={style.pillDiv}>
             <PillText text="Important" pillColor="bg-blue-400" />

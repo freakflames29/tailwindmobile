@@ -16,7 +16,7 @@ const Home = () => {
 
       <AppButton title="Add Task" bgColor="bg-blue-500"/>
       <View style={tw`my-2`}/>
-      <TaskCard/>
+      <TaskCard type="high"/>
     </WorkingView>
   );
 };
