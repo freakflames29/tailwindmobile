@@ -2,32 +2,51 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import tw from "../../lib/twrc";
 import PillText from "./PillText";
+import { PillType } from "../../Model/TaskData";
 
 interface TaskCardProps {
   type: "high" | "low" | "mid";
+  title: string;
+  date: string;
+  pills: PillType[];
 }
 
-const TaskCard:React.FC<TaskCardProps> = ({type="mid"}) => {
-  const backgroundColor = type === "high" ? "bg-red-400" : type === "low" ? "bg-green-400" : "bg-blue-400";
-  const borderColor = type === "high" ? "border-red-400" : type === "low" ? "border-green-400" : "border-blue-400";
-
+const TaskCard: React.FC<TaskCardProps> = ({
+  type = "mid",
+  title = "",
+  date = "",
+  pills = [],
+}) => {
+  const backgroundColor =
+    type === "high"
+      ? "bg-red-400"
+      : type === "low"
+      ? "bg-green-400"
+      : "bg-yellow-400";
+  const borderColor =
+    type === "high"
+      ? "border-red-400"
+      : type === "low"
+      ? "border-green-400"
+      : "border-yellow-400";
 
   return (
-    <TouchableOpacity style={[style.card, tw`${backgroundColor}`]} activeOpacity={0.6}>
+    <TouchableOpacity
+      style={[style.card, tw`${backgroundColor}`]}
+      activeOpacity={0.6}
+    >
       <View style={[style.contentCard, tw`${borderColor}`]}>
         <View style={style.row}>
           <View style={style.pillDiv}>
-            <PillText text="Important" pillColor="bg-blue-400" />
-            <PillText text="Do it First" />
+            {pills.map((pill, index) => (
+              <PillText key={index} type={pill} />
+            ))}
           </View>
           <Text style={style.task} numberOfLines={3} ellipsizeMode="tail">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam
-            maiores laudantium, magnam nemo ab recusandae sed ducimus culpa fuga
-            fugit numquam quas voluptas, quam nisi praesentium nihil repellat
-            accusamus id?
+            {title}
           </Text>
 
-          <Text style={style.date}>9 PM, 16 Wed 2025</Text>
+          <Text style={style.date}>{date}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -40,7 +59,7 @@ const style = {
   row: tw`flex justify-between`,
   task: tw`font-brunson text-15 `,
   date: tw`text-lg ml-2 mt-10 font-urb-bold`,
-  pillDiv: tw`flex-row gap-1 mb-2`,
+  pillDiv: tw`flex-row gap-2 mb-2 flex-wrap `,
 };
 
 export default TaskCard;

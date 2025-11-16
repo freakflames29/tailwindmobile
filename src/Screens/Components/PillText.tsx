@@ -1,28 +1,55 @@
-import { Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import tw from "../../lib/twrc";
+import { PillType } from "../../Model/TaskData";
 
 interface PillProps {
-  pillColor?: string;
-  pillTextColor?: string;
+  type: PillType;
   onPress?: () => void;
-  text:string
 }
 
-const PillText: React.FC<PillProps> = ({
-  pillColor = "bg-red-500",
-  pillTextColor = "text-white",
-  onPress,
-  text
-}) => {
+const PillText: React.FC<PillProps> = ({ type, onPress }) => {
+  const bg =
+    type === "DO_IT_FIRST"
+      ? "bg-red-500"
+      : type === "IMPORTANT"
+      ? "bg-yellow-400"
+      : "bg-green-600";
+
+  const color = type === "IMPORTANT" ? "text-black" : "text-white";
+  const text =
+    type === "DO_IT_FIRST"
+      ? "Do It First"
+      : type === "IMPORTANT"
+      ? "Important"
+      : "Need To Do Today";
   return (
-    <Text
+    <TouchableOpacity
       onPress={onPress}
-      style={tw`px-5 py-1 text-lg rounded-full text-center ${pillColor} ${pillTextColor}`}
+      style={[styles.container, tw`${bg}`]}
+      activeOpacity={0.8}
     >
-    {text}
-    </Text>
+      <View style={styles.content}>
+        <Text style={[styles.text, tw`${color}`]}>{text}</Text>
+      </View>
+    </TouchableOpacity>
   );
+};
+
+const styles = {
+  container: tw`
+    px-4 
+    py-2 
+    rounded-full 
+    self-start
+  `,
+  content: tw`
+    flex-row 
+    items-center 
+    justify-center
+  `,
+  icon: tw`mr-2`,
+  text: tw`text-lg font-bold`,
 };
 
 export default PillText;
