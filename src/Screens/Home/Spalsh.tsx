@@ -17,7 +17,6 @@ import { User, Session } from "@supabase/supabase-js";
 const Spalsh = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<ScreenParamsList>>();
-  console.log("The supabase coonection", supabase);
   const dispatch = useAppDispatch();
 
   const checkUserInfo = () => {

@@ -17,6 +17,9 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 import { supabase } from "../../services/supabase";
 import { supabaseTable } from "../../Model/appData";
 import { RefreshControl } from "react-native-gesture-handler";
+import { StorageController } from "../../Adapter/Storage/StorageController";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { clearRedux } from "../../Adapter/redux/store";
 const dummyData: TaskData[] = [
   {
     id: "1",
@@ -49,6 +52,7 @@ const Home = () => {
   const userData = useAppSelector((state) => state.auth.user);
   const [taskData, setTaskData] = useState<TaskDBType[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const dispatch = useAppDispatch();
 
   const navigation =
     useNavigation<NativeStackNavigationProp<ScreenParamsList>>();
@@ -88,6 +92,19 @@ const Home = () => {
     setRefreshing(false);
   }, []);
 
+  const logout = () => {
+    StorageController.CLEAR_ALL();
+    dispatch(clearRedux());
+    navigation.reset({
+      index: 0,
+      routes: [
+        {
+          name: ScreenTypes.SPALSH,
+        },
+      ],
+    });
+  };
+
   return (
     <WorkingView>
       <ActionSheet
@@ -118,6 +135,11 @@ const Home = () => {
         title="Add Task"
         bgColor="bg-blue-500"
         onPress={() => navigation.navigate(ScreenTypes.ADD_TASK)}
+      />
+      <AppButton
+        title="Logout"
+        bgColor="bg-red-500 my-2"
+        onPress={logout}
       />
       <View style={tw`my-2`} />
 
