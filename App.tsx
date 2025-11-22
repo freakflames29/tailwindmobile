@@ -9,7 +9,7 @@ export default function App() {
   return (
     <FontProvider>
       <View style={styles.container}>
-        <StatusBar style="dark"  />
+        <StatusBar style="dark" />
         {/* <Test /> */}
         <NavigationWrapper />
       </View>

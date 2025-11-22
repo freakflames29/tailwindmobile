@@ -14,6 +14,7 @@ import RNDateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import PillText from "../Components/PillText";
 import { PillType } from "../../Model/TaskData";
+import moment from "moment";
 
 // defined outside component to prevent recreation on render
 const AVAILABLE_PILLS: PillType[] = [
@@ -24,12 +25,14 @@ const AVAILABLE_PILLS: PillType[] = [
 
 const AddTask = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const formik = useFormik({
     initialValues: {
       title: "",
       date: "",
       pills: [] as PillType[],
+      time: "",
     },
     validationSchema: addTaskSchema,
     onSubmit: (values) => {
@@ -60,8 +63,19 @@ const AddTask = () => {
   const handleDateChange = (event: DateTimePickerEvent, date?: Date) => {
     setShowDatePicker(false);
     if (event.type === "set" && date) {
+      console.log("🚀 userDate:", date);
       const userDate = date.toISOString().split("T")[0];
       formik.setFieldValue("date", userDate);
+    }
+  };
+
+  const handleTimeChange = (event: DateTimePickerEvent, time:any) => {
+    setShowTimePicker(false);
+    if (event.type === "set" && time) {
+      // console.log("🚀 userTime:", time);
+      const userTime = moment(time).format("h:mm A");
+      console.log("🚀 userTime:", userTime);
+      formik.setFieldValue("time", userTime);
     }
   };
 
@@ -81,6 +95,17 @@ const AddTask = () => {
               formik.values.date ? new Date(formik.values.date) : new Date()
             }
             mode="date"
+            display="compact"
+          />
+        )}
+
+        {showTimePicker && (
+          <RNDateTimePicker
+            onChange={handleTimeChange}
+            value={
+              formik.values.date ? new Date(formik.values.date) : new Date()
+            }
+            mode="time"
             display="default"
           />
         )}
@@ -104,6 +129,17 @@ const AddTask = () => {
           error={formik.errors.date}
           touched={formik.touched.date}
           onPress={() => setShowDatePicker(true)}
+        />
+
+        <Blankspace height={2} />
+        <AppDateTrigger
+          label="When to do"
+          placeholder="Select Time"
+          value={formik.values.time}
+          error={formik.errors.time}
+          touched={formik.touched.time}
+          type="time"
+          onPress={() => setShowTimePicker(true)}
         />
 
         <Blankspace height={2} />

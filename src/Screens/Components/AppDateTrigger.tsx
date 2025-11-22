@@ -1,8 +1,4 @@
-import {
-  View,
-  Text,
-  Pressable,
-} from "react-native";
+import { View, Text, Pressable } from "react-native";
 import React from "react";
 import tw from "../../lib/twrc"; // Adjust path as needed
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -18,6 +14,7 @@ interface AppDateTriggerProps {
   contentStyle?: string; // Style for the inner box
   icon?: React.ReactNode;
   labelStyle?: string;
+  type?: "date" | "time";
 }
 
 const AppDateTrigger: React.FC<AppDateTriggerProps> = ({
@@ -31,6 +28,7 @@ const AppDateTrigger: React.FC<AppDateTriggerProps> = ({
   contentStyle,
   icon,
   labelStyle,
+  type = "date",
 }) => {
   // Logic: Error -> Default (No Focus state needed for buttons usually, but could add pressed state)
   const getBorderColor = (pressed: boolean) => {
@@ -64,9 +62,16 @@ const AppDateTrigger: React.FC<AppDateTriggerProps> = ({
         {/* Optional Icon slot (Left side) */}
         {icon ? (
           <View style={tw`mr-3`}>{icon}</View>
-        ) : (
+        ) : type === "date" ? (
           <FontAwesome
             name="calendar"
+            size={20}
+            color={value ? "#4b5563" : "#9ca3af"}
+            style={tw`mr-3`}
+          />
+        ) : (
+          <FontAwesome
+            name="clock-o"
             size={20}
             color={value ? "#4b5563" : "#9ca3af"}
             style={tw`mr-3`}
