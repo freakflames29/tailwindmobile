@@ -13,8 +13,10 @@ import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import PillText from "../Components/PillText";
-import { PillType } from "../../Model/TaskData";
+import { PillType, TaskDBType } from "../../Model/TaskData";
 import moment from "moment";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { supabase } from "../../services/supabase";
 
 // defined outside component to prevent recreation on render
 const AVAILABLE_PILLS: PillType[] = [
@@ -26,6 +28,30 @@ const AVAILABLE_PILLS: PillType[] = [
 const AddTask = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const authData = useAppSelector((state) => state.auth.user);
+
+  const addTask = async (payload: TaskDBType) => {
+    try {
+      formik.setSubmitting(true);
+      const { data, error } = await supabase
+        .from("tasks")
+        .insert(payload)
+        .select()
+        .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      if (data) {
+        console.log("🚀 Task added successfully:", data);
+      }
+    } catch (error) {
+      console.log("🚀 Error adding task:", error);
+    } finally {
+      formik.setSubmitting(false);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -36,7 +62,18 @@ const AddTask = () => {
     },
     validationSchema: addTaskSchema,
     onSubmit: (values) => {
-      console.log("🚀 Submitting Task:", values);
+      const payload: TaskDBType = {
+        user_id: authData?.id || "",
+        title: values.title,
+        priority: "mid",
+        due_date: values.date,
+        due_time: values.time,
+        tags: values.pills,
+        is_completed: false,
+      };
+
+      console.log("🚀 Submitting Task payload>>>>:", payload);
+      addTask(payload);
       // navigation.goBack();
     },
   });
@@ -69,7 +106,7 @@ const AddTask = () => {
     }
   };
 
-  const handleTimeChange = (event: DateTimePickerEvent, time:any) => {
+  const handleTimeChange = (event: DateTimePickerEvent, time: any) => {
     setShowTimePicker(false);
     if (event.type === "set" && time) {
       // console.log("🚀 userTime:", time);
@@ -174,6 +211,8 @@ const AddTask = () => {
         <AppButton
           title="Create Task"
           bgColor="bg-blue-500"
+          loading={formik.isSubmitting}
+          disabled={formik.isSubmitting}
           onPress={formik.handleSubmit as any} // Formik type casting for RN
         />
       </ScrollView>

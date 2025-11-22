@@ -1,10 +1,10 @@
 import { View, Text, FlatList } from "react-native";
-import React, { useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import tw from "../../lib/twrc";
 import WorkingView from "../Components/WorkingView";
 import TaskCard from "../Components/TaskCard";
 import AppButton from "../Components/AppButton";
-import { TaskData } from "../../Model/TaskData";
+import { TaskData, TaskDBType } from "../../Model/TaskData";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import H1Text from "../Components/H1Text";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -12,6 +12,11 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import ScreenTypes, { ScreenParamsList } from "../../Model/ScreenTypes";
 import { FlashList } from "@shopify/flash-list";
+import { useSelector } from "react-redux";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { supabase } from "../../services/supabase";
+import { supabaseTable } from "../../Model/appData";
+import { RefreshControl } from "react-native-gesture-handler";
 const dummyData: TaskData[] = [
   {
     id: "1",
@@ -41,6 +46,10 @@ const dummyData: TaskData[] = [
 
 const Home = () => {
   const actionSheetRef = useRef<ActionSheetRef>(null);
+  const userData = useAppSelector((state) => state.auth.user);
+  const [taskData, setTaskData] = useState<TaskDBType[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
   const navigation =
     useNavigation<NativeStackNavigationProp<ScreenParamsList>>();
 
@@ -48,6 +57,37 @@ const Home = () => {
     // console.log("Long Pressed");
     actionSheetRef.current?.show();
   };
+
+  const fetchTask = async () => {
+    try {
+      const { data, error } = await supabase
+        .from(supabaseTable.tasks)
+        .select("*")
+        .eq("user_id", userData?.id);
+
+      if (error) {
+        throw error;
+      }
+
+      if (data) {
+        console.log("🚀 Task fetched successfully:", data);
+        setTaskData(data);
+      }
+    } catch (e) {
+      console.log("🚀 Error fetching task:", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchTask();
+  }, []);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchTask(); // Reuse your existing fetchTask function
+    setRefreshing(false);
+  }, []);
+
   return (
     <WorkingView>
       <ActionSheet
@@ -82,16 +122,24 @@ const Home = () => {
       <View style={tw`my-2`} />
 
       <FlashList
-        data={dummyData}
-        keyExtractor={(item) => item.id}
+        data={taskData}
+        keyExtractor={(item) => item.id!!}
         contentContainerStyle={tw`gap-3 mb-20 pb-20 flex-grow-1`}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="blue"
+            colors={["#3b82f6"]} // Blue color for the refresh indicator
+          />
+        }
         renderItem={({ item }) => {
           return (
             <TaskCard
-              type={item.type}
+              type={item.priority}
               title={item.title}
-              date={item.date}
-              pills={item.pills}
+              date={item.due_date}
+              pills={item.tags}
               onLongPress={handleLongPress}
             />
           );

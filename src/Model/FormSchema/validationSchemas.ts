@@ -8,3 +8,10 @@ export const addTaskSchema = yup.object({
   time: yup.string().required("Time is required"),
   // description: yup.string().required("Description is required"),
 });
+
+
+// signin validation schema
+export const signinSchema = yup.object({
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup.string().required("Password is required"),
+});

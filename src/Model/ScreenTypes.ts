@@ -3,6 +3,7 @@ const ScreenTypes = {
   SPALSH: "SPALSH",
   ADD_TASK: "ADD TASK",
   TEST: "TEST",
+  SIGNIN: "SIGNIN",
 };
 
 export interface ScreenParamsList {
@@ -10,6 +11,7 @@ export interface ScreenParamsList {
   [ScreenTypes.SPALSH]: undefined;
   [ScreenTypes.ADD_TASK]: undefined;
   [ScreenTypes.TEST]: undefined;
+  [ScreenTypes.SIGNIN]: undefined;
 }
 
 export default ScreenTypes;

@@ -8,3 +8,15 @@ export interface TaskData {
   date: string;
   pills: PillType[];
 }
+
+export interface TaskDBType {
+  id?: string;
+  user_id: string;
+  title: string;
+  priority: "high" | "mid" | "low";
+  due_date: string;
+  due_time: string | null;
+  tags: PillType[];
+  is_completed: boolean;
+  created_at?: string;
+}

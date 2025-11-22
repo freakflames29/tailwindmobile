@@ -1,5 +1,5 @@
 import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import tw from "../../lib/twrc";
 import WorkingView from "../Components/WorkingView";
 import { images } from "../../Model/Images";
@@ -7,9 +7,47 @@ import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
 import ScreenTypes, { ScreenParamsList } from "../../Model/ScreenTypes";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
+import { signInWithPassword, supabase } from "../../services/supabase";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { authActions } from "../../Adapter/redux/slices/authSlice";
+import { StorageController } from "../../Adapter/Storage/StorageController";
+import { PersistanceStorageKey } from "../../Adapter/Storage/PersistanceStorageKey";
+import { User, Session } from "@supabase/supabase-js";
 const Spalsh = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<ScreenParamsList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ScreenParamsList>>();
+  console.log("The supabase coonection", supabase);
+  const dispatch = useAppDispatch();
+
+  const checkUserInfo = () => {
+    const userInfo = StorageController.GET_DATA<User>(
+      PersistanceStorageKey.USER_DETAILS
+    );
+    const sessionInfo = StorageController.GET_DATA<Session>(
+      PersistanceStorageKey.SESSION_DETAILS
+    );
+    console.log("The VALUE", userInfo, sessionInfo);
+    if (userInfo && sessionInfo) {
+      dispatch(authActions.setAuth({ user: userInfo, session: sessionInfo }));
+
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: ScreenTypes.HOME,
+          },
+        ],
+      });
+    } else {
+      navigation.navigate(ScreenTypes.SIGNIN);
+    }
+  };
+
+  useEffect(() => {
+    const keys = StorageController.GET_ALL_KEYS();
+    console.log("The keys", keys);  
+  }, []);
 
   return (
     <>
@@ -20,10 +58,7 @@ const Spalsh = () => {
             Your personal app for tracking your daily activities.
           </Text>
 
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => navigation.navigate(ScreenTypes.HOME)}
-          >
+          <TouchableOpacity style={styles.btn} onPress={() => checkUserInfo()}>
             <Text style={styles.btnText}>Let's Go</Text>
           </TouchableOpacity>
         </View>
