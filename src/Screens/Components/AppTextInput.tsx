@@ -61,7 +61,7 @@ const AppTextInput = forwardRef<TextInput, AppTextInputProps>(
 
 const styles = {
   container: tw`w-full mb-3`,
-  label: tw`text-gray-600 text-sm font-urb-reg mb-1.5 ml-1`,
+  label: tw`text-gray-700 text-xl font-urb-bold mb-1.5 ml-1`,
   inputBase: tw`w-full p-4 rounded-xl border border-gray-200 font-urb-reg text-gray-800 text-base`,
   errorText: tw`text-red-500 text-xs font-urb-reg mt-1 ml-1`,
 };

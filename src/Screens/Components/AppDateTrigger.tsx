@@ -92,7 +92,7 @@ const AppDateTrigger: React.FC<AppDateTriggerProps> = ({
 
 const styles = {
   container: tw`w-full mb-3`,
-  label: tw`text-gray-600 text-sm font-urb-reg mb-1.5 ml-1`,
+  label: tw`text-gray-700 text-xl font-urb-bold mb-1.5 ml-1`,
   // Merging your requested style: p-7, items-center, w-full, bg-gray-50, rounded-xl, border
   triggerBase: tw`flex-row items-center w-full p-5 rounded-xl border border-gray-200`,
   // Note: I reduced p-7 to p-5 to better match standard inputs,
