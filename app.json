@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "tailwindmobile",
-    "slug": "tailwindmobile",
+    "name": "Madhav",
+    "slug": "madhav",
     "version": "1.0.0",
-    "orientation": "default",
+    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
@@ -22,7 +22,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.sourav29meow.tailwindmobile"
+      "package": "com.sourav29meow.madhav"
     },
     "web": {
       "favicon": "./assets/favicon.png"
