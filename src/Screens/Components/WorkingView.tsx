@@ -20,7 +20,7 @@ const WorkingView: React.FC<WorkingViewProps> = ({ children, style }) => {
       <StatusBar style="dark"/>
 
       {/* Main content */}
-      <View style={[tw`flex-1 p-3 bg-white`, style]}>
+      <View style={[tw`flex-1 p-4 bg-white`, style]}>
         {children}
       </View>
     </View>
