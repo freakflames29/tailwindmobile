@@ -57,7 +57,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
 };
 
 const style = {
-  card: tw`bg-yellow-400 rounded-6 h-auto`,
+  card: tw`bg-yellow-400 rounded-6 h-auto my-2`,
   contentCard: tw`bg-white p-4 rounded-6 h-auto mb-2 border-yellow-400 border-2`,
   row: tw`flex justify-between`,
   task: tw`font-brunson text-15 `,

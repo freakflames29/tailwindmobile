@@ -5,10 +5,11 @@ import WorkingView from "../Components/WorkingView";
 import { images } from "../../Model/Images";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
-import ScreenTypes from "../../Model/ScreenTypes";
+import ScreenTypes, { ScreenParamsList } from "../../Model/ScreenTypes";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 const Spalsh = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<ScreenParamsList>>();
 
   return (
     <>

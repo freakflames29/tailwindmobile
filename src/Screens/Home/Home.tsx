@@ -7,8 +7,11 @@ import AppButton from "../Components/AppButton";
 import { TaskData } from "../../Model/TaskData";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import H1Text from "../Components/H1Text";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import ScreenTypes, { ScreenParamsList } from "../../Model/ScreenTypes";
+import { FlashList } from "@shopify/flash-list";
 const dummyData: TaskData[] = [
   {
     id: "1",
@@ -38,6 +41,8 @@ const dummyData: TaskData[] = [
 
 const Home = () => {
   const actionSheetRef = useRef<ActionSheetRef>(null);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ScreenParamsList>>();
 
   const handleLongPress = () => {
     // console.log("Long Pressed");
@@ -51,7 +56,11 @@ const Home = () => {
       >
         <H1Text title="Task Done ?" style={`text-center my-3`} />
         <View style={tw`flex-row gap-2 mt-2 w-1/2 items-center`}>
-          <AppButton title="Not Done" bgColor="bg-red-500" onPress={()=>actionSheetRef.current?.hide()} />
+          <AppButton
+            title="Not Done"
+            bgColor="bg-red-500"
+            onPress={() => actionSheetRef.current?.hide()}
+          />
           <AppButton
             title="Done"
             bgColor="bg-green-500"
@@ -65,13 +74,17 @@ const Home = () => {
         <Text style={styles.greeting}>Good Afternoon</Text>
       </View>
 
-      <AppButton title="Add Task" bgColor="bg-blue-500" />
+      <AppButton
+        title="Add Task"
+        bgColor="bg-blue-500"
+        onPress={() => navigation.navigate(ScreenTypes.ADD_TASK)}
+      />
       <View style={tw`my-2`} />
 
-      <FlatList
+      <FlashList
         data={dummyData}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={tw`gap-3 mb-20 pb-20`}
+        contentContainerStyle={tw`gap-3 mb-20 pb-20 flex-grow-1`}
         renderItem={({ item }) => {
           return (
             <TaskCard
