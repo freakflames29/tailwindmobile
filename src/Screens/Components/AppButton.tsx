@@ -60,7 +60,7 @@ const AppButton: React.FC<AppButtonProps> = ({
 };
 
 const styles = {
-  base: tw`justify-center items-center flex-row gap-2`,
+  base: tw`justify-center items-center flex-row gap-2 border-2`,
   text: tw`text-lg font-urb-bold`,
 
   // Sizes

@@ -55,6 +55,7 @@ const Home = () => {
   const userData = useAppSelector((state) => state.auth.user);
   const [taskData, setTaskData] = useState<TaskDBType[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [taskLoading, setTaskLoading] = useState(false);
   const dispatch = useAppDispatch();
 
   const navigation =
@@ -67,6 +68,7 @@ const Home = () => {
 
   const fetchTask = async () => {
     try {
+      setTaskLoading(true);
       const { data, error } = await supabase
         .from(supabaseTable.tasks)
         .select("*")
@@ -83,16 +85,25 @@ const Home = () => {
       }
     } catch (e) {
       console.log("🚀 Error fetching task:", e);
+    } finally {
+      setTaskLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchTask();
-  }, []);
+  // useEffect(() => {
+  //   fetchTask();
+  // }, []);
 
-  useFocusEffect(() => {
-    fetchTask();
-  });
+  useFocusEffect(
+    useCallback(() => {
+      console.log("🚀 Focus");
+      fetchTask();
+    }, [])
+  );
+
+  if (taskLoading) {
+    console.log("Task loading");
+  }
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -100,18 +111,13 @@ const Home = () => {
     setRefreshing(false);
   }, []);
 
-  const logout = () => {
-    StorageController.CLEAR_ALL();
-    dispatch(clearRedux());
-    navigation.reset({
-      index: 0,
-      routes: [
-        {
-          name: ScreenTypes.SPALSH,
-        },
-      ],
-    });
-  };
+  if (taskLoading) {
+    return (
+      <View style={tw`flex-1 items-center justify-center`}>
+        <H1Text title="Loading..." />
+      </View>
+    );
+  }
 
   return (
     <WorkingView>
@@ -202,7 +208,7 @@ const styles = {
   hareKrishna: tw`text-blue-500 text-5xl font-brunson`,
   greeting: tw`text-gray-600 text-xl font-urb-reg `,
   date: tw`text-gray-500 text-sm font-urb-reg `,
-  addTaskBtn: tw`w-20 h-20 bg-blue-500  rounded-full items-center justify-center absolute bottom-10 right-8 z-10`,
+  addTaskBtn: tw`w-20 h-20 bg-blue-500 border-2  rounded-full items-center justify-center absolute bottom-10 right-8 z-10`,
 };
 
 export default Home;

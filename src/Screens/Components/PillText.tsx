@@ -74,7 +74,7 @@ const PillText: React.FC<PillProps> = ({
 };
 
 const styles = {
-  container: tw`rounded-full px-4 py-2 m-1`,
+  container: tw`rounded-full px-4 py-2 m-1 border-2`,
   content: tw`flex-row items-center`,
   text: tw`font-urb-medium text-sm`,
 } as const;

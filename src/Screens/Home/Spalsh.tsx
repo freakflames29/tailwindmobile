@@ -14,6 +14,7 @@ import { authActions } from "../../Adapter/redux/slices/authSlice";
 import { StorageController } from "../../Adapter/Storage/StorageController";
 import { PersistanceStorageKey } from "../../Adapter/Storage/PersistanceStorageKey";
 import { User, Session } from "@supabase/supabase-js";
+import AppButton from "../Components/AppButton";
 const Spalsh = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<ScreenParamsList>>();
@@ -57,6 +58,7 @@ const Spalsh = () => {
             Your personal app for tracking your daily activities.
           </Text>
 
+  
           <TouchableOpacity style={styles.btn} onPress={() => checkUserInfo()}>
             <Text style={styles.btnText}>Let's Go</Text>
           </TouchableOpacity>
@@ -75,7 +77,7 @@ const styles = {
 
   text: tw`text-white  tracking-wide text-12 font-brunson`,
   btnText: tw`text-blue-900 text-4xl font-brunson  text-center`,
-  btn: tw`p-3 bg-yellow-500 rounded-3 mt-3`,
+  btn: tw`p-3 bg-yellow-500 rounded-3 mt-3 border-2 `,
 };
 
 export default Spalsh;

@@ -76,7 +76,7 @@ const style = {
   row: tw`flex justify-between`,
   task: tw`font-brunson text-15 `,
   date: tw`text-lg ml-2 font-urb-bold `,
-  dateTimeView: tw`px-4 py-1  bg-slate-50 rounded-full flex-row items-center gap-0  border`,
+  dateTimeView: tw`px-4 py-1  bg-slate-50 rounded-full flex-row items-center gap-0 border`,
   pillDiv: tw`flex-row gap-2 mb-2 flex-wrap `,
 };
 
