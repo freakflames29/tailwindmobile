@@ -240,7 +240,7 @@ const Home = () => {
 
       <TouchableOpacity style={tw`w-40`} onPress={toggleTodaySevaHandler}>
         <Text
-          style={tw`text-xl text-center font-urb-bold ${isTodayFilterActive ? "bg-blue-600" : "bg-green-600"} text-white px-4 py-2 rounded-full`}
+          style={tw`text-lg text-center font-urb-reg ${isTodayFilterActive ? "bg-blue-600" : "bg-green-600"} text-white px-4 py-2 rounded-full`}
         >
           {isTodayFilterActive ? "All Seva" : "Today's Seva"}
         </Text>
