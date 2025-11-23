@@ -6,6 +6,7 @@ export const addTaskSchema = yup.object({
   date: yup.string().required("Date is required"),
   pills: yup.array().min(1, "Please select importance").required(),
   time: yup.string().required("Time is required"),
+  priority: yup.string().required("Priority is required"),
   // description: yup.string().required("Description is required"),
 });
 

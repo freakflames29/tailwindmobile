@@ -1,5 +1,11 @@
-import { View, Text, ScrollView } from "react-native";
-import React, { useState, useCallback } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Keyboard,
+} from "react-native";
+import React, { useState, useCallback, useRef } from "react";
 import WorkingView from "../Components/WorkingView";
 import H1Text from "../Components/H1Text";
 import AppTextInput from "../Components/AppTextInput";
@@ -13,7 +19,7 @@ import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import PillText from "../Components/PillText";
-import { PillType, TaskDBType } from "../../Model/TaskData";
+import { PillType, PriorityType, TaskDBType } from "../../Model/TaskData";
 import moment from "moment";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { supabase } from "../../services/supabase";
@@ -21,6 +27,8 @@ import { ToastMessage } from "../../Adapter/Alert/ToastMessage";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { ScreenParamsList } from "../../Model/ScreenTypes";
 import { PostgrestError } from "@supabase/supabase-js";
+import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
+import { FlashList } from "@shopify/flash-list";
 
 // defined outside component to prevent recreation on render
 const AVAILABLE_PILLS: PillType[] = [
@@ -29,11 +37,14 @@ const AVAILABLE_PILLS: PillType[] = [
   "IMPORTANT",
 ];
 
+const PRIORITY_OPTIONS: PriorityType[] = ["high", "mid", "low"];
 const AddTask = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const authData = useAppSelector((state) => state.auth.user);
   const navigation = useNavigation<NavigationProp<ScreenParamsList>>();
+
+  const priorityActionSheetRef = useRef<ActionSheetRef>(null);
 
   const addTask = async (payload: TaskDBType) => {
     try {
@@ -67,13 +78,14 @@ const AddTask = () => {
       date: "",
       pills: [] as PillType[],
       time: "",
+      priority: "",
     },
     validationSchema: addTaskSchema,
     onSubmit: (values) => {
       const payload: TaskDBType = {
         user_id: authData?.id || "",
         title: values.title,
-        priority: "mid",
+        priority: values.priority as PriorityType,
         due_date: values.date,
         due_time: values.time,
         tags: values.pills,
@@ -124,6 +136,32 @@ const AddTask = () => {
     }
   };
 
+  const handlePriorityChange = (priority: PriorityType) => {
+    formik.setFieldValue("priority", priority);
+    priorityActionSheetRef.current?.hide();
+  };
+
+  const priorityColor = (priority: PriorityType) => {
+    switch (priority) {
+      case "high":
+        return "border-red-500";
+      case "mid":
+        return "border-yellow-500";
+      case "low":
+        return "border-green-500";
+    }
+  };
+  const priorityTextColor = (priority: PriorityType) => {
+    switch (priority) {
+      case "high":
+        return "text-red-500";
+      case "mid":
+        return "text-yellow-500";
+      case "low":
+        return "text-green-500";
+    }
+  };
+
   return (
     <WorkingView>
       <ScrollView
@@ -132,6 +170,27 @@ const AddTask = () => {
         showsVerticalScrollIndicator={false}
       >
         <H1Text title="Add Task" style="mb-5 text-blue-500 text-5xl" />
+
+        <ActionSheet ref={priorityActionSheetRef}>
+          <View style={tw`px-4 py-8 flex-row w-full gap-2 justify-center`}>
+            {PRIORITY_OPTIONS.map((item) => (
+              <TouchableOpacity
+                onPress={() => handlePriorityChange(item)}
+                style={tw`text-xl w-1/4 capitalize font-urb-bold text-gray-700 mb-3 border border-black-300 ${priorityColor(
+                  item
+                )} p-4 rounded-xl`}
+              >
+                <Text
+                  style={tw`${priorityTextColor(
+                    item
+                  )} capitalize text-center font-urb-bold`}
+                >
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ActionSheet>
 
         {showDatePicker && (
           <RNDateTimePicker
@@ -173,7 +232,10 @@ const AddTask = () => {
           value={formik.values.date}
           error={formik.errors.date}
           touched={formik.touched.date}
-          onPress={() => setShowDatePicker(true)}
+          onPress={() => {
+            Keyboard.dismiss();
+            setShowDatePicker(true);
+          }}
         />
 
         <Blankspace height={2} />
@@ -184,7 +246,24 @@ const AddTask = () => {
           error={formik.errors.time}
           touched={formik.touched.time}
           type="time"
-          onPress={() => setShowTimePicker(true)}
+          onPress={() => {
+            Keyboard.dismiss();
+            setShowTimePicker(true);
+          }}
+        />
+
+        <Blankspace height={2} />
+        <AppDateTrigger
+          label="Priority"
+          placeholder="Select Priority"
+          value={formik.values.priority}
+          error={formik.errors.priority}
+          touched={formik.touched.priority}
+          type="priority"
+          onPress={() => {
+            Keyboard.dismiss();
+            priorityActionSheetRef.current?.show();
+          }}
         />
 
         <Blankspace height={2} />

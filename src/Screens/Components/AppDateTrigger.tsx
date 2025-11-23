@@ -14,7 +14,7 @@ interface AppDateTriggerProps {
   contentStyle?: string; // Style for the inner box
   icon?: React.ReactNode;
   labelStyle?: string;
-  type?: "date" | "time";
+  type?: "date" | "time" | "priority";
 }
 
 const AppDateTrigger: React.FC<AppDateTriggerProps> = ({
@@ -69,14 +69,21 @@ const AppDateTrigger: React.FC<AppDateTriggerProps> = ({
             color={value ? "#4b5563" : "#9ca3af"}
             style={tw`mr-3`}
           />
-        ) : (
+        ) : type === "time" ? (
           <FontAwesome
             name="clock-o"
             size={20}
             color={value ? "#4b5563" : "#9ca3af"}
             style={tw`mr-3`}
           />
-        )}
+        ) : type === "priority" ? ( 
+          <FontAwesome
+            name="star"
+            size={20}
+            color={value ? "#4b5563" : "#9ca3af"}
+            style={tw`mr-3`}
+          />
+        ) : null}
 
         <Text style={[styles.textBase, textColor]}>{displayValue}</Text>
 

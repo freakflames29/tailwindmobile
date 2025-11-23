@@ -26,7 +26,7 @@ const AppTextInput = forwardRef<TextInput, AppTextInputProps>(
     // Logic: Error -> Focus -> Default
     const getBorderColor = () => {
       if (touched && error) return tw`border-red-500 bg-red-50`;
-      if (isFocused) return tw`border-yellow-500 bg-yellow-50 border-2`;
+      // if (isFocused) return tw`border-yellow-500 bg-yellow-50 border-2`;
       return tw`border-gray-200 bg-gray-50`;
     };
 
