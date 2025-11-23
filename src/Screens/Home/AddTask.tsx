@@ -17,6 +17,10 @@ import { PillType, TaskDBType } from "../../Model/TaskData";
 import moment from "moment";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { supabase } from "../../services/supabase";
+import { ToastMessage } from "../../Adapter/Alert/ToastMessage";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { ScreenParamsList } from "../../Model/ScreenTypes";
+import { PostgrestError } from "@supabase/supabase-js";
 
 // defined outside component to prevent recreation on render
 const AVAILABLE_PILLS: PillType[] = [
@@ -29,6 +33,7 @@ const AddTask = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const authData = useAppSelector((state) => state.auth.user);
+  const navigation = useNavigation<NavigationProp<ScreenParamsList>>();
 
   const addTask = async (payload: TaskDBType) => {
     try {
@@ -40,14 +45,17 @@ const AddTask = () => {
         .maybeSingle();
 
       if (error) {
-        throw error;
+        throw error as PostgrestError;
       }
 
       if (data) {
         console.log("🚀 Task added successfully:", data);
+        ToastMessage.TOAST_SHORT_BOTTOM("Task added successfully");
+        navigation.goBack();
       }
-    } catch (error) {
+    } catch (error: PostgrestError | unknown) {
       console.log("🚀 Error adding task:", error);
+      ToastMessage.TOAST_SHORT_BOTTOM(error?.message || "Something went wrong");
     } finally {
       formik.setSubmitting(false);
     }

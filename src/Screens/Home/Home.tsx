@@ -8,7 +8,7 @@ import { TaskData, TaskDBType } from "../../Model/TaskData";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import H1Text from "../Components/H1Text";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import ScreenTypes, { ScreenParamsList } from "../../Model/ScreenTypes";
 import { FlashList } from "@shopify/flash-list";
@@ -67,6 +67,7 @@ const Home = () => {
       const { data, error } = await supabase
         .from(supabaseTable.tasks)
         .select("*")
+        .order("created_at", { ascending: false })
         .eq("user_id", userData?.id);
 
       if (error) {
@@ -85,6 +86,10 @@ const Home = () => {
   useEffect(() => {
     fetchTask();
   }, []);
+
+  useFocusEffect(() => {
+    fetchTask();
+  });
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -136,11 +141,7 @@ const Home = () => {
         bgColor="bg-blue-500"
         onPress={() => navigation.navigate(ScreenTypes.ADD_TASK)}
       />
-      <AppButton
-        title="Logout"
-        bgColor="bg-red-500 my-2"
-        onPress={logout}
-      />
+      <AppButton title="Logout" bgColor="bg-red-500 my-2" onPress={logout} />
       <View style={tw`my-2`} />
 
       <FlashList

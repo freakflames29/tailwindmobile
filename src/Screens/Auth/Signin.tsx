@@ -34,33 +34,43 @@ const Signin = () => {
     },
   });
   const siginHandler = async () => {
-    formik.setSubmitting(true);
-    const { data, error } = await signInWithPassword(
-      formik.values.email,
-      formik.values.password
-    );
-    if (error) {
+    try {
+      formik.setSubmitting(true);
+      const { data, error } = await signInWithPassword(
+        formik.values.email,
+        formik.values.password
+      );
+      if (error) {
+        throw new Error(error.message);
+      } else {
+        dispatch(
+          authActions.setAuth({ user: data.user, session: data.session })
+        );
+        StorageController.SET_DATA(
+          PersistanceStorageKey.USER_DETAILS,
+          data.user
+        );
+        StorageController.SET_DATA(
+          PersistanceStorageKey.SESSION_DETAILS,
+          data.session
+        );
+        console.log("Sigin in success", data);
+        ToastMessage.TOAST_SHORT_BOTTOM("Sigin in success");
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: ScreenTypes.HOME,
+            },
+          ],
+        });
+      }
+    } catch (error: any) {
       console.log("Error in sigin in", error);
       ToastMessage.TOAST_SHORT_BOTTOM(error.message);
-    } else {
-      dispatch(authActions.setAuth({ user: data.user, session: data.session }));
-      StorageController.SET_DATA(PersistanceStorageKey.USER_DETAILS, data.user);
-      StorageController.SET_DATA(
-        PersistanceStorageKey.SESSION_DETAILS,
-        data.session
-      );
-      console.log("Sigin in success", data);
-      ToastMessage.TOAST_SHORT_BOTTOM("Sigin in success");
-      navigation.reset({
-        index: 0,
-        routes: [
-          {
-            name: ScreenTypes.HOME,
-          },
-        ],
-      });
+    } finally {
+      formik.setSubmitting(false);
     }
-    formik.setSubmitting(false);
   };
   return (
     <WorkingView>
@@ -90,7 +100,7 @@ const Signin = () => {
         title="Signin"
         onPress={formik.handleSubmit}
         loading={formik.isSubmitting}
-        disabled={!formik.isValid || formik.isSubmitting}
+        disabled={formik.isSubmitting}
       />
     </WorkingView>
   );
