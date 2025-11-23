@@ -5,6 +5,7 @@ import PillText from "./PillText";
 import { PillType } from "../../Model/TaskData";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Blankspace from "./Blankspace";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface TaskCardProps {
   type: "high" | "low" | "mid";
@@ -36,13 +37,15 @@ const TaskCard: React.FC<TaskCardProps> = ({
       ? "border-green-400"
       : "border-yellow-400";
 
+  const color =
+    type === "high" ? "#f87171" : type === "low" ? "#4ade80" : "#facc15";
   return (
     <TouchableOpacity
       style={[style.card, tw`${backgroundColor}`]}
       activeOpacity={0.6}
       onLongPress={onLongPress}
     >
-      <View style={[style.contentCard, tw`${1}`]}>
+      <View style={[style.contentCard,]}>
         <View style={style.row}>
           <View style={style.pillDiv}>
             {pills.map((pill, index) => (
@@ -71,8 +74,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
 };
 
 const style = {
-  card: tw`bg-yellow-400 rounded-6 h-auto my-2 border-2`,
-  contentCard: tw`bg-white p-4 rounded-6 h-auto mb-2`,
+  card: tw`bg-yellow-400 rounded-6 h-auto my-2 border-1`,
+  contentCard: tw`bg-white p-4 rounded-5 h-auto mb-2 border-2`,
   row: tw`flex justify-between`,
   task: tw`font-brunson text-15 `,
   date: tw`text-lg ml-2 font-urb-bold `,

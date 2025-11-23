@@ -169,7 +169,7 @@ const AddTask = () => {
         contentContainerStyle={tw`flex-grow pb-10`}
         showsVerticalScrollIndicator={false}
       >
-        <H1Text title="Add Task" style="mb-5 text-blue-500 text-5xl" />
+        <H1Text title="Create Seva" style="mb-5 text-blue-500 text-5xl" />
 
         <ActionSheet ref={priorityActionSheetRef}>
           <View style={tw`px-4 py-8 flex-row w-full gap-2 justify-center`}>
@@ -296,7 +296,7 @@ const AddTask = () => {
         <Blankspace height={4} />
 
         <AppButton
-          title="Create Task"
+          title="Create Seva"
           bgColor="bg-blue-500"
           loading={formik.isSubmitting}
           disabled={formik.isSubmitting}

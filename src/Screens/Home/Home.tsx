@@ -22,7 +22,8 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { clearRedux } from "../../Adapter/redux/store";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { images } from "../../Model/Images";
-import { formatDate } from "../../lib/genutils";
+import { formatDate, getFormattedToday } from "../../lib/genutils";
+import { ToastMessage } from "../../Adapter/Alert/ToastMessage";
 const dummyData: TaskData[] = [
   {
     id: "1",
@@ -56,14 +57,18 @@ const Home = () => {
   const [taskData, setTaskData] = useState<TaskDBType[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [taskLoading, setTaskLoading] = useState(false);
+  const [selectdTask, setSelectedTask] = useState<TaskDBType | null>(null);
+  const [isDoneLoading, setIsDoneLoading] = useState(false);
   const dispatch = useAppDispatch();
 
   const navigation =
     useNavigation<NativeStackNavigationProp<ScreenParamsList>>();
 
-  const handleLongPress = () => {
+  const handleLongPress = (task: TaskDBType) => {
     // console.log("Long Pressed");
     actionSheetRef.current?.show();
+    console.log("Selected Task", task);
+    setSelectedTask(task);
   };
 
   const fetchTask = async () => {
@@ -73,6 +78,7 @@ const Home = () => {
         .from(supabaseTable.tasks)
         .select("*")
         .order("created_at", { ascending: false })
+        .eq("is_completed", false)
         .eq("user_id", userData?.id);
 
       if (error) {
@@ -101,15 +107,37 @@ const Home = () => {
     }, [])
   );
 
-  if (taskLoading) {
-    console.log("Task loading");
-  }
-
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchTask(); // Reuse your existing fetchTask function
     setRefreshing(false);
   }, []);
+
+  const taskDoneHandler = async (taskId: string) => {
+    try {
+      setIsDoneLoading(true);
+      const { error } = await supabase
+        .from(supabaseTable.tasks)
+        .update({ is_completed: true })
+        .eq("user_id", userData?.id)
+        .eq("id", taskId);
+
+      if (!error) {
+        ToastMessage.TOAST_SHORT_BOTTOM("Task Completed successfully");
+        actionSheetRef.current?.hide();
+        fetchTask();
+      }
+      if (error) {
+        // ToastMessage.TOAST_SHORT_BOTTOM("Something went wrong doing done");
+        throw error;
+      }
+    } catch (e) {
+      console.log("🚀 Error fetching task:", e);
+      ToastMessage.TOAST_SHORT_BOTTOM("Something went wrong doing done");
+    } finally {
+      setIsDoneLoading(false);
+    }
+  };
 
   if (taskLoading) {
     return (
@@ -119,13 +147,22 @@ const Home = () => {
     );
   }
 
+  const listEmptyComponent = () => {
+    return (
+      <View style={tw`flex-1 items-center justify-center `}>
+        <Image source={images.notask} style={tw`w-40 h-40 `} />
+        <H1Text title="Seems like you have no tasks!" style="text-slate-400 font-urb-bold text-2xl"/>
+      </View>
+    );
+  };
+
   return (
     <WorkingView>
       <ActionSheet
         ref={actionSheetRef}
         containerStyle={tw`h-1/4 p-4 items-center`}
       >
-        <H1Text title="Task Done ?" style={`text-center my-3`} />
+        <H1Text title="Seva Done ?" style={`text-center my-3`} />
         <View style={tw`flex-row gap-2 mt-2 w-1/2 items-center`}>
           <AppButton
             title="Not Done"
@@ -135,6 +172,10 @@ const Home = () => {
           <AppButton
             title="Done"
             bgColor="bg-green-500"
+            loading={isDoneLoading}
+            onPress={() => {
+              taskDoneHandler(selectdTask?.id!);
+            }}
             icon={<FontAwesome name="check" size={24} color="white" />}
           />
         </View>
@@ -142,7 +183,7 @@ const Home = () => {
 
       <View style={styles.container}>
         <View style={styles.leftSection}>
-          <Text style={styles.date}>Wed 16 May, 2025</Text>
+          <Text style={styles.date}>{getFormattedToday()}</Text>
           <Text style={styles.hareKrishna}>Hare krishna!🪷</Text>
         </View>
         <TouchableOpacity
@@ -193,10 +234,11 @@ const Home = () => {
               date={formatDate(item.due_date)}
               time={item.due_time}
               pills={item.tags}
-              onLongPress={handleLongPress}
+              onLongPress={() => handleLongPress(item)}
             />
           );
         }}
+        ListEmptyComponent={listEmptyComponent}
       />
       {/* <TaskCard type="high" /> */}
     </WorkingView>
