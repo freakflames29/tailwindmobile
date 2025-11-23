@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import tw from "../../lib/twrc";
 import WorkingView from "../Components/WorkingView";
@@ -20,6 +20,8 @@ import { RefreshControl } from "react-native-gesture-handler";
 import { StorageController } from "../../Adapter/Storage/StorageController";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { clearRedux } from "../../Adapter/redux/store";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { images } from "../../Model/Images";
 const dummyData: TaskData[] = [
   {
     id: "1",
@@ -130,18 +132,34 @@ const Home = () => {
           />
         </View>
       </ActionSheet>
+
       <View style={styles.container}>
-        <Text style={styles.date}>Wed 16 May, 2025</Text>
-        <Text style={styles.hareKrishna}>Hi! Sourav 🪷</Text>
-        <Text style={styles.greeting}>Good Afternoon</Text>
+        <View style={styles.leftSection}>
+          <Text style={styles.date}>Wed 16 May, 2025</Text>
+          <Text style={styles.hareKrishna}>Hare krishna!🪷</Text>
+        </View>
+        <TouchableOpacity style={tw`w-1/5 items-center justify-center`}>
+          <Image
+            source={images.profile}
+            resizeMode="cover"
+            style={tw`w-12 h-12 rounded-full`}
+          />
+        </TouchableOpacity>
+        {/* <Text style={styles.greeting}>Good Afternoon</Text> */}
       </View>
 
-      <AppButton
+      <TouchableOpacity
+        style={styles.addTaskBtn}
+        onPress={() => navigation.navigate(ScreenTypes.ADD_TASK)}
+      >
+        <FontAwesome6 name="add" size={24} color="white" />
+      </TouchableOpacity>
+      {/* <AppButton
         title="Add Task"
         bgColor="bg-blue-500"
         onPress={() => navigation.navigate(ScreenTypes.ADD_TASK)}
-      />
-      <AppButton title="Logout" bgColor="bg-red-500 my-2" onPress={logout} />
+      /> */}
+      {/* <AppButton title="Logout" bgColor="bg-red-500 my-2" onPress={logout} /> */}
       <View style={tw`my-2`} />
 
       <FlashList
@@ -174,10 +192,12 @@ const Home = () => {
 };
 
 const styles = {
-  container: tw`mb-5`,
+  container: tw`mb-1 w-full flex-row`,
+  leftSection: tw`w-4/5`,
   hareKrishna: tw`text-blue-500 text-5xl font-brunson`,
   greeting: tw`text-gray-600 text-xl font-urb-reg `,
   date: tw`text-gray-500 text-sm font-urb-reg `,
+  addTaskBtn: tw`w-20 h-20 bg-blue-500  rounded-full items-center justify-center absolute bottom-10 right-8 z-10`,
 };
 
 export default Home;
