@@ -4,7 +4,7 @@ import ScreenTypes from "../../Model/ScreenTypes";
 import Home from "../../Screens/Home/Home";
 import AddTask from "../../Screens/Home/AddTask";
 import Signin from "../../Screens/Auth/Signin";
-
+import Profile from "../../Screens/Profile/Profile";
 const Stack = createNativeStackNavigator();
 
 const StackNavigation = () => {
@@ -22,6 +22,7 @@ const StackNavigation = () => {
 
       {/* Auth screens */}
       <Stack.Screen name={ScreenTypes.SIGNIN} component={Signin} />
+      <Stack.Screen name={ScreenTypes.PROFILE} component={Profile} />
     </Stack.Navigator>
   );
 };

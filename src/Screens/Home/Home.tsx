@@ -22,6 +22,7 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { clearRedux } from "../../Adapter/redux/store";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { images } from "../../Model/Images";
+import { formatDate } from "../../lib/genutils";
 const dummyData: TaskData[] = [
   {
     id: "1",
@@ -138,7 +139,10 @@ const Home = () => {
           <Text style={styles.date}>Wed 16 May, 2025</Text>
           <Text style={styles.hareKrishna}>Hare krishna!🪷</Text>
         </View>
-        <TouchableOpacity style={tw`w-1/5 items-center justify-center`}>
+        <TouchableOpacity
+          style={tw`w-1/5 items-center justify-center`}
+          onPress={() => navigation.navigate(ScreenTypes.PROFILE)}
+        >
           <Image
             source={images.profile}
             resizeMode="cover"
@@ -179,7 +183,8 @@ const Home = () => {
             <TaskCard
               type={item.priority}
               title={item.title}
-              date={item.due_date}
+              date={formatDate(item.due_date)}
+              time={item.due_time}
               pills={item.tags}
               onLongPress={handleLongPress}
             />

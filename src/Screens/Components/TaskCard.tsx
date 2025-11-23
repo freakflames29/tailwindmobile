@@ -3,11 +3,14 @@ import React from "react";
 import tw from "../../lib/twrc";
 import PillText from "./PillText";
 import { PillType } from "../../Model/TaskData";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import Blankspace from "./Blankspace";
 
 interface TaskCardProps {
   type: "high" | "low" | "mid";
   title: string;
   date: string;
+  time: string | null;
   pills: PillType[];
   onLongPress?: () => void;
 }
@@ -18,6 +21,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   date = "",
   pills = [],
   onLongPress,
+  time = "",
 }) => {
   const backgroundColor =
     type === "high"
@@ -38,7 +42,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
       activeOpacity={0.6}
       onLongPress={onLongPress}
     >
-      <View style={[style.contentCard, tw`${borderColor}`]}>
+      <View style={[style.contentCard, tw`${1}`]}>
         <View style={style.row}>
           <View style={style.pillDiv}>
             {pills.map((pill, index) => (
@@ -48,8 +52,18 @@ const TaskCard: React.FC<TaskCardProps> = ({
           <Text style={style.task} numberOfLines={3} ellipsizeMode="tail">
             {title}
           </Text>
+          <Blankspace height={8} />
+          <View style={tw`flex-row gap-2`}>
+            <View style={style.dateTimeView}>
+              <FontAwesome6 name="clock" size={16} color="black" />
+              <Text style={style.date}>{time}</Text>
+            </View>
 
-          <Text style={style.date}>{date}</Text>
+            <View style={style.dateTimeView}>
+              <FontAwesome6 name="calendar" size={16} color="black" />
+              <Text style={style.date}>{date}</Text>
+            </View>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -57,11 +71,12 @@ const TaskCard: React.FC<TaskCardProps> = ({
 };
 
 const style = {
-  card: tw`bg-yellow-400 rounded-6 h-auto my-2`,
-  contentCard: tw`bg-white p-4 rounded-6 h-auto mb-2 border-yellow-400 border-2`,
+  card: tw`bg-yellow-400 rounded-6 h-auto my-2 border-2`,
+  contentCard: tw`bg-white p-4 rounded-6 h-auto mb-2`,
   row: tw`flex justify-between`,
   task: tw`font-brunson text-15 `,
-  date: tw`text-lg ml-2 mt-10 font-urb-bold`,
+  date: tw`text-lg ml-2 font-urb-bold `,
+  dateTimeView: tw`px-4 py-1  bg-slate-50 rounded-full flex-row items-center gap-0  border`,
   pillDiv: tw`flex-row gap-2 mb-2 flex-wrap `,
 };
 
