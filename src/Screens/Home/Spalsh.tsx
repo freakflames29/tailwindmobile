@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
+import { View, Text, ImageBackground, TouchableOpacity, Platform } from "react-native";
 import React, { useEffect } from "react";
 import tw from "../../lib/twrc";
 import WorkingView from "../Components/WorkingView";
@@ -15,11 +15,12 @@ import { StorageController } from "../../Adapter/Storage/StorageController";
 import { PersistanceStorageKey } from "../../Adapter/Storage/PersistanceStorageKey";
 import { User, Session } from "@supabase/supabase-js";
 import AppButton from "../Components/AppButton";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 const Spalsh = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<ScreenParamsList>>();
   const dispatch = useAppDispatch();
-
+  const insets = useSafeAreaInsets();
   const checkUserInfo = () => {
     const userInfo = StorageController.GET_DATA<User>(
       PersistanceStorageKey.USER_DETAILS
@@ -51,9 +52,9 @@ const Spalsh = () => {
 
   return (
     <>
-      <ImageBackground source={images.splashImage} style={styles.imageBack}>
+      <ImageBackground source={images.splashImage} style={[styles.imageBack]}>
         <StatusBar style="light" />
-        <View style={styles.card}>
+        <View style={[styles.card,{marginBottom:insets.bottom}]}>
           <Text style={styles.text}>
             Your personal app for tracking your daily activities.
           </Text>
@@ -75,7 +76,7 @@ const styles = {
             rounded-10
             p-7`,
 
-  text: tw`text-white  tracking-wide text-12 font-brunson`,
+  text: tw`text-white  tracking-wide ${Platform.OS=="ios"?"text-11":"text-12"} font-brunson`,
   btnText: tw`text-blue-900 text-4xl font-brunson  text-center`,
   btn: tw`p-3 bg-yellow-500 rounded-3 mt-3 border-2 `,
 };

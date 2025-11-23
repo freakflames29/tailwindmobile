@@ -176,6 +176,7 @@ const Home = () => {
         data={taskData}
         keyExtractor={(item) => item.id!!}
         contentContainerStyle={tw`gap-3 mb-20 pb-20 flex-grow-1`}
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
