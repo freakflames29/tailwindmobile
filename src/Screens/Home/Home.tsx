@@ -22,8 +22,13 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { clearRedux } from "../../Adapter/redux/store";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { images } from "../../Model/Images";
-import { formatDate, getFormattedToday } from "../../lib/genutils";
+import {
+  formatDate,
+  getFormattedToday,
+  getTodayISOFormat,
+} from "../../lib/genutils";
 import { ToastMessage } from "../../Adapter/Alert/ToastMessage";
+import PillText from "../Components/PillText";
 const dummyData: TaskData[] = [
   {
     id: "1",
@@ -59,6 +64,10 @@ const Home = () => {
   const [taskLoading, setTaskLoading] = useState(false);
   const [selectdTask, setSelectedTask] = useState<TaskDBType | null>(null);
   const [isDoneLoading, setIsDoneLoading] = useState(false);
+
+  const [isTodayFilterActive, setIsTodayFilterActive] = useState(false);
+  const [allTasks, setAllTasks] = useState<TaskDBType[]>([]);
+
   const dispatch = useAppDispatch();
 
   const navigation =
@@ -77,7 +86,7 @@ const Home = () => {
       const { data, error } = await supabase
         .from(supabaseTable.tasks)
         .select("*")
-        .order("created_at", { ascending: false })
+        .order("created_at", { ascending: true })
         .eq("is_completed", false)
         .eq("user_id", userData?.id);
 
@@ -88,6 +97,7 @@ const Home = () => {
       if (data) {
         console.log("🚀 Task fetched successfully:", data);
         setTaskData(data);
+        setAllTasks(data);
       }
     } catch (e) {
       console.log("🚀 Error fetching task:", e);
@@ -139,6 +149,23 @@ const Home = () => {
     }
   };
 
+  const toggleTodaySevaHandler = () => {
+    if (isTodayFilterActive) {
+      // show all
+      setTaskData(allTasks);
+      setIsTodayFilterActive(false);
+      return;
+    }
+
+    // filter only today's
+    const filtered = allTasks.filter(
+      (task) => task.due_date === getTodayISOFormat()
+    );
+
+    setTaskData(filtered);
+    setIsTodayFilterActive(true);
+  };
+
   if (taskLoading) {
     return (
       <View style={tw`flex-1 items-center justify-center`}>
@@ -151,7 +178,10 @@ const Home = () => {
     return (
       <View style={tw`flex-1 items-center justify-center `}>
         <Image source={images.notask} style={tw`w-40 h-40 `} />
-        <H1Text title="Seems like you have no tasks!" style="text-slate-400 font-urb-bold text-2xl"/>
+        <H1Text
+          title="Seems like you have no tasks!"
+          style="text-slate-400 font-urb-bold text-2xl"
+        />
       </View>
     );
   };
@@ -205,13 +235,16 @@ const Home = () => {
       >
         <FontAwesome6 name="add" size={24} color="white" />
       </TouchableOpacity>
-      {/* <AppButton
-        title="Add Task"
-        bgColor="bg-blue-500"
-        onPress={() => navigation.navigate(ScreenTypes.ADD_TASK)}
-      /> */}
-      {/* <AppButton title="Logout" bgColor="bg-red-500 my-2" onPress={logout} /> */}
+
       <View style={tw`my-2`} />
+
+      <TouchableOpacity style={tw`w-40`} onPress={toggleTodaySevaHandler}>
+        <Text
+          style={tw`text-xl text-center font-urb-bold ${isTodayFilterActive ? "bg-blue-600" : "bg-green-600"} text-white px-4 py-2 rounded-full`}
+        >
+          {isTodayFilterActive ? "All Seva" : "Today's Seva"}
+        </Text>
+      </TouchableOpacity>
 
       <FlashList
         data={taskData}
