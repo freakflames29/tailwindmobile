@@ -64,6 +64,7 @@ const Home = () => {
   const [taskLoading, setTaskLoading] = useState(false);
   const [selectdTask, setSelectedTask] = useState<TaskDBType | null>(null);
   const [isDoneLoading, setIsDoneLoading] = useState(false);
+  const [isFailLoading, setIsFailLoading] = useState(false);
 
   const [isTodayFilterActive, setIsTodayFilterActive] = useState(false);
   const [allTasks, setAllTasks] = useState<TaskDBType[]>([]);
@@ -88,6 +89,7 @@ const Home = () => {
         .select("*")
         .order("created_at", { ascending: true })
         .eq("is_completed", false)
+        .eq("failed", false)
         .eq("user_id", userData?.id);
 
       if (error) {
@@ -149,6 +151,31 @@ const Home = () => {
     }
   };
 
+  const taskFailedHandler = async (taskId: string) => {
+    try {
+      setIsFailLoading(true);
+      const { error } = await supabase
+        .from(supabaseTable.tasks)
+        .update({ failed: true })
+        .eq("user_id", userData?.id)
+        .eq("id", taskId);
+
+      if (!error) {
+        ToastMessage.TOAST_SHORT_BOTTOM("Alright don't lose hope! Keep going!");
+        actionSheetRef.current?.hide();
+        fetchTask();
+      }
+      if (error) {
+        throw error;
+      }
+    } catch (e) {
+      console.log("🚀 Error marking task as failed:", e);
+      ToastMessage.TOAST_SHORT_BOTTOM("Something went wrong marking as failed");
+    } finally {
+      setIsFailLoading(false);
+    }
+  };
+
   const toggleTodaySevaHandler = () => {
     if (isTodayFilterActive) {
       // show all
@@ -197,12 +224,17 @@ const Home = () => {
           <AppButton
             title="Not Done"
             bgColor="bg-red-500"
-            onPress={() => actionSheetRef.current?.hide()}
+            loading={isFailLoading}
+            disabled={isFailLoading}
+            onPress={() => {
+              taskFailedHandler(selectdTask?.id!);
+            }}
           />
           <AppButton
             title="Done"
             bgColor="bg-green-500"
             loading={isDoneLoading}
+            disabled={isDoneLoading}
             onPress={() => {
               taskDoneHandler(selectdTask?.id!);
             }}
@@ -240,7 +272,9 @@ const Home = () => {
 
       <TouchableOpacity style={tw`w-40`} onPress={toggleTodaySevaHandler}>
         <Text
-          style={tw`text-lg text-center font-urb-reg ${isTodayFilterActive ? "bg-blue-600" : "bg-green-600"} text-white px-4 py-2 rounded-full`}
+          style={tw`text-lg text-center font-urb-reg ${
+            isTodayFilterActive ? "bg-blue-600" : "bg-green-600"
+          } text-white px-4 py-2 rounded-full`}
         >
           {isTodayFilterActive ? "All Seva" : "Today's Seva"}
         </Text>

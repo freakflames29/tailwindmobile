@@ -19,4 +19,5 @@ export interface TaskDBType {
   tags: PillType[];
   is_completed: boolean;
   created_at?: string;
+  failed: boolean;
 }
